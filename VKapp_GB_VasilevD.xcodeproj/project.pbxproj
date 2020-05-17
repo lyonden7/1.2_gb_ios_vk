@@ -31,6 +31,7 @@
 		285C47F12383446B00A5C366 /* LoadingIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 285C47F02383446B00A5C366 /* LoadingIndicator.swift */; };
 		285C47F323893F1300A5C366 /* PhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 285C47F223893F1300A5C366 /* PhotoViewController.swift */; };
 		286EB3E7246CC02400B3777E /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 286EB3E6246CC02400B3777E /* Session.swift */; };
+		286EB3EB2471696400B3777E /* WebViewLoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 286EB3EA2471696400B3777E /* WebViewLoginController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -60,6 +61,7 @@
 		285C47F02383446B00A5C366 /* LoadingIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingIndicator.swift; sourceTree = "<group>"; };
 		285C47F223893F1300A5C366 /* PhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewController.swift; sourceTree = "<group>"; };
 		286EB3E6246CC02400B3777E /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
+		286EB3EA2471696400B3777E /* WebViewLoginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewLoginController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -253,6 +255,7 @@
 			isa = PBXGroup;
 			children = (
 				286EB3E6246CC02400B3777E /* Session.swift */,
+				286EB3EA2471696400B3777E /* WebViewLoginController.swift */,
 			);
 			path = Resource;
 			sourceTree = "<group>";
@@ -333,6 +336,7 @@
 				285080A0235FC5E400CE14C5 /* AllGroupsController.swift in Sources */,
 				2847C7282368F4A00046D6D4 /* Friend.swift in Sources */,
 				2850807D235B278D00CE14C5 /* AppDelegate.swift in Sources */,
+				286EB3EB2471696400B3777E /* WebViewLoginController.swift in Sources */,
 				2850809A235FC58C00CE14C5 /* FriendsController.swift in Sources */,
 				285C47EB23832F4300A5C366 /* NewsCell.swift in Sources */,
 				2847C72A2368F4B10046D6D4 /* Group.swift in Sources */,
