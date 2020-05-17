@@ -1,0 +1,6 @@
+framework module Pods_VKapp_GB_VasilevD {
+  umbrella header "Pods-VKapp_GB_VasilevD-umbrella.h"
+
+  export *
+  module * { export * }
+}
