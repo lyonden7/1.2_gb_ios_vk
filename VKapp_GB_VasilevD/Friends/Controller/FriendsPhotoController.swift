@@ -10,6 +10,9 @@ import UIKit
 
 class FriendsPhotoController: UICollectionViewController {
     
+    let networkService = NetworkService()
+    let token = Session.instance.accessToken
+    
     var photos = [UIImage]()
     
     var friend: User!
@@ -20,6 +23,8 @@ class FriendsPhotoController: UICollectionViewController {
         assert(friend != nil)
 
         title = "\(friend.firstName) \(friend.lastName)"
+        
+        networkService.loadFriendPhotos(token: token)
     }
     
     // MARK: UICollectionViewDataSource

@@ -12,6 +12,7 @@ class FriendsController: UITableViewController {
 
     let friends = User.getFriends()
     let networkService = NetworkService()
+    let token = Session.instance.accessToken
     
     
     // MARK: - Sort
@@ -43,7 +44,7 @@ class FriendsController: UITableViewController {
         super.viewDidLoad()
         (firstCharacters, sortedFriends) = sort(friends)
         
-        networkService.loadFriends(token: Session.instance.accessToken)
+        networkService.loadFriends(token: token)
     }
     
     

@@ -10,6 +10,9 @@ import UIKit
 
 class GroupsController: UITableViewController {
 
+    let networkService = NetworkService()
+    let token = Session.instance.accessToken
+    
     fileprivate var groupNames = [
         Group(name: "Российская Премьер-Лига", avatar: UIImage(named: "rpl")),
         Group(name: "Лига Европы", avatar: UIImage(named: "uel"))
@@ -21,6 +24,8 @@ class GroupsController: UITableViewController {
     // MARK: - System function
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        networkService.loadGroups(token: token)
     }
     
     override func viewWillAppear(_ animated: Bool) {
