@@ -12,8 +12,7 @@ class AllGroupsController: UITableViewController {
 
     @IBOutlet var searchBar: UISearchBar!
     
-    let networkService = NetworkService()
-    let token = Session.instance.accessToken
+    let networkService = NetworkService(token: Session.instance.accessToken)
     var groups = [Group]()
 
     // MARK: - Table view data source
@@ -42,7 +41,7 @@ extension AllGroupsController: UISearchBarDelegate {
     }
         
     private func filterGroups(with text: String) {
-        networkService.loadSearchGroups(token: token, for: text) { [weak self] group in
+        networkService.loadSearchGroups(for: text) { [weak self] group in
             self?.groups = group
             self?.tableView.reloadData()
         }

@@ -18,8 +18,13 @@ class NetworkService {
     
     let baseURL = "https://api.vk.com/method/"
     let versionAPI = "5.103"
+    private let token: String
     
-    func loadFriends(token: String, completion: @escaping ([Friend]) -> Void){
+    init(token: String) {
+        self.token = token
+    }
+    
+    func loadFriends(completion: @escaping ([Friend]) -> Void){
         let path  = "friends.get"
         let url = baseURL + path
         let parameters: Parameters = [
@@ -36,7 +41,7 @@ class NetworkService {
         }
     }
     
-    func loadFriendPhotos(token: String, ownerId: Int, completion: @escaping ([Photo]) -> Void){
+    func loadFriendPhotos(ownerId: Int, completion: @escaping ([Photo]) -> Void){
         let path  = "photos.getAll"
         let url = baseURL + path
         let parameters: Parameters = [
@@ -59,7 +64,7 @@ class NetworkService {
         }
     }
     
-    func loadGroups(token: String, completion: @escaping ([Group]) -> Void){
+    func loadGroups(completion: @escaping ([Group]) -> Void){
         let path  = "groups.get"
         let url = baseURL + path
         let parameters: Parameters = [
@@ -76,7 +81,7 @@ class NetworkService {
         }
     }
     
-    func loadSearchGroups(token: String, for searchTtext: String, completion: @escaping ([Group]) -> Void){
+    func loadSearchGroups(for searchTtext: String, completion: @escaping ([Group]) -> Void){
         let path  = "groups.search"
         let url = baseURL + path
         let parameters: Parameters = [
@@ -87,13 +92,16 @@ class NetworkService {
         
         NetworkService.session.request(url, parameters: parameters).responseData { response in
             guard let data = response.value else { return }
-            do {
-                let group = try JSONDecoder().decode(GroupResponse.self, from: data).response
-                completion(group.items)
-                print(group)
-            } catch {
-                print(error)
-            }
+            let group = try! JSONDecoder().decode(GroupResponse.self, from: data).response
+            completion(group.items)
+            print(group)
+//            do {
+//                let group = try JSONDecoder().decode(GroupResponse.self, from: data).response
+//                completion(group.items)
+//                print(group)
+//            } catch {
+//                print(error)
+//            }
             
         }
     }

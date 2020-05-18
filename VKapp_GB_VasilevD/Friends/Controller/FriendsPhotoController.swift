@@ -10,8 +10,7 @@ import UIKit
 
 class FriendsPhotoController: UICollectionViewController {
     
-    let networkService = NetworkService()
-    let token = Session.instance.accessToken
+    let networkService = NetworkService(token: Session.instance.accessToken)
     
     var photos = [Photo]()
     var friend: Friend!
@@ -24,7 +23,7 @@ class FriendsPhotoController: UICollectionViewController {
 
         title = "\(friend.firstName) \(friend.lastName)"
         
-        networkService.loadFriendPhotos(token: token, ownerId: ownerId) { [weak self] photo in
+        networkService.loadFriendPhotos(ownerId: ownerId) { [weak self] photo in
             self?.photos = photo
             self?.collectionView.reloadData()
         }

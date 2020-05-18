@@ -10,9 +10,11 @@ import Foundation
 
 class Session {
     
+    private init(){}
+    
     static let instance = Session()
     
-    private init(){}
+    
     
     var accessToken = String()
     var userID = Int()

@@ -11,13 +11,12 @@ import UIKit
 class FriendsController: UITableViewController {
 
     var friends = [Friend]()
-    let networkService = NetworkService()
-    let token = Session.instance.accessToken
+    let networkService = NetworkService(token: Session.instance.accessToken)
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        networkService.loadFriends(token: token) { [weak self] friend in
+        networkService.loadFriends() { [weak self] friend in
             self?.friends = friend
             self?.tableView.reloadData()
         }

@@ -10,8 +10,7 @@ import UIKit
 
 class GroupsController: UITableViewController {
 
-    let networkService = NetworkService()
-    let token = Session.instance.accessToken
+    let networkService = NetworkService(token: Session.instance.accessToken)
     var groups = [Group]()
     
     fileprivate lazy var filteredGroups = self.groups
@@ -20,7 +19,7 @@ class GroupsController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        networkService.loadGroups(token: token) { [weak self] group in
+        networkService.loadGroups() { [weak self] group in
             self?.groups = group
             self?.tableView.reloadData()
         }
@@ -93,7 +92,8 @@ extension GroupsController: UISearchBarDelegate {
         filterGroups(with: searchText)
     }
     
-    fileprivate func filterGroups(with text: String) {
+    fileprivate func filterGroups(with text: String?) {
+        let text = text ?? ""
         if text.isEmpty {
             filteredGroups = groups
             tableView.reloadData()
