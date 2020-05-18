@@ -33,6 +33,7 @@
 		286EB3E7246CC02400B3777E /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 286EB3E6246CC02400B3777E /* Session.swift */; };
 		286EB3EB2471696400B3777E /* WebViewLoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 286EB3EA2471696400B3777E /* WebViewLoginController.swift */; };
 		286EB3ED24716D8200B3777E /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 286EB3EC24716D8200B3777E /* NetworkService.swift */; };
+		286EB3EF2471E45800B3777E /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 286EB3EE2471E45800B3777E /* Photo.swift */; };
 		5FF790BBB8F405FADB10C4D3 /* Pods_VKapp_GB_VasilevD.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C5718C1F26E616460E32ED1 /* Pods_VKapp_GB_VasilevD.framework */; };
 /* End PBXBuildFile section */
 
@@ -65,6 +66,7 @@
 		286EB3E6246CC02400B3777E /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		286EB3EA2471696400B3777E /* WebViewLoginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewLoginController.swift; sourceTree = "<group>"; };
 		286EB3EC24716D8200B3777E /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
+		286EB3EE2471E45800B3777E /* Photo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
 		6C5718C1F26E616460E32ED1 /* Pods_VKapp_GB_VasilevD.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_VKapp_GB_VasilevD.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		91041BC9B68209F86A9C1456 /* Pods-VKapp_GB_VasilevD.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VKapp_GB_VasilevD.debug.xcconfig"; path = "Target Support Files/Pods-VKapp_GB_VasilevD/Pods-VKapp_GB_VasilevD.debug.xcconfig"; sourceTree = "<group>"; };
 		D846B25A5C18649A7D2DE081 /* Pods-VKapp_GB_VasilevD.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VKapp_GB_VasilevD.release.xcconfig"; path = "Target Support Files/Pods-VKapp_GB_VasilevD/Pods-VKapp_GB_VasilevD.release.xcconfig"; sourceTree = "<group>"; };
@@ -150,6 +152,7 @@
 			isa = PBXGroup;
 			children = (
 				2847C7272368F4A00046D6D4 /* Friend.swift */,
+				286EB3EE2471E45800B3777E /* Photo.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -402,6 +405,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				286EB3EF2471E45800B3777E /* Photo.swift in Sources */,
 				285080A2235FC60200CE14C5 /* FriendsPhotoController.swift in Sources */,
 				2845BD702368B723008A7199 /* FriendsCell.swift in Sources */,
 				286EB3ED24716D8200B3777E /* NetworkService.swift in Sources */,

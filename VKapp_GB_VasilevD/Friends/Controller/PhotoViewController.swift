@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AlamofireImage
 
 class PhotoViewController: UIViewController {
     enum AnimationDirection {
@@ -22,7 +23,7 @@ class PhotoViewController: UIViewController {
     
     private let additionalImageView = UIImageView()
     
-    public var photos: [UIImage] = []
+    public var photos = [Photo]()
     public var selectedPhotoIndex: Int = 0
     private var propertyAnimator: UIViewPropertyAnimator!
     private var animationDirection: AnimationDirection = .left
@@ -31,7 +32,7 @@ class PhotoViewController: UIViewController {
         super.viewDidLoad()
 
         guard !photos.isEmpty else { return }
-        bigPhotoImageView.image = photos[selectedPhotoIndex]
+        bigPhotoImageView.af.setImage(withURL: URL(string: photos[selectedPhotoIndex].photoUrl)!)
         
         let leftSwipeGR = UISwipeGestureRecognizer(target: self, action: #selector(photoSwipedLeft(_:)))
         leftSwipeGR.direction = .left
@@ -55,13 +56,13 @@ class PhotoViewController: UIViewController {
         guard selectedPhotoIndex + 1 <= photos.count - 1 else { return }
         
         additionalImageView.transform = CGAffineTransform(translationX: 1.3*self.additionalImageView.bounds.width, y: 150).concatenating(CGAffineTransform(scaleX: 1.3, y: 1.3))
-        additionalImageView.image = photos[selectedPhotoIndex + 1]
+        additionalImageView.af.setImage(withURL: URL(string: photos[selectedPhotoIndex + 1].photoUrl)!)
         UIView.animate(withDuration: 0.7, delay: 0, options: .curveEaseInOut, animations: {
             self.bigPhotoImageView.transform = CGAffineTransform(translationX: -1.5*self.bigPhotoImageView.bounds.width, y: -100).concatenating(CGAffineTransform(scaleX: 0.6, y: 0.6))
             self.additionalImageView.transform = .identity
         }) { _ in
             self.selectedPhotoIndex += 1
-            self.bigPhotoImageView.image = self.photos[self.selectedPhotoIndex]
+            self.bigPhotoImageView.af.setImage(withURL: URL(string: self.photos[self.selectedPhotoIndex].photoUrl)!)
             self.bigPhotoImageView.transform = .identity
             self.additionalImageView.image = nil
         }
@@ -71,13 +72,13 @@ class PhotoViewController: UIViewController {
         guard selectedPhotoIndex >= 1 else { return }
         
         additionalImageView.transform = CGAffineTransform(translationX: -1.3*self.additionalImageView.bounds.width, y: 150).concatenating(CGAffineTransform(scaleX: 1.3, y: 1.3))
-        additionalImageView.image = photos[selectedPhotoIndex - 1]
+        additionalImageView.af.setImage(withURL: URL(string: photos[selectedPhotoIndex - 1].photoUrl)!)
         UIView.animate(withDuration: 0.7, delay: 0, options: .curveEaseInOut, animations: {
             self.bigPhotoImageView.transform = CGAffineTransform(translationX: 1.5*self.bigPhotoImageView.bounds.width, y: -100).concatenating(CGAffineTransform(scaleX: 0.6, y: 0.6))
             self.additionalImageView.transform = .identity
         }) { _ in
             self.selectedPhotoIndex -= 1
-            self.bigPhotoImageView.image = self.photos[self.selectedPhotoIndex]
+            self.bigPhotoImageView.af.setImage(withURL: URL(string: self.photos[self.selectedPhotoIndex].photoUrl)!)
             self.bigPhotoImageView.transform = .identity
             self.additionalImageView.image = nil
         }
@@ -91,7 +92,7 @@ class PhotoViewController: UIViewController {
                 animationDirection = .right
                 // начальная трансформация
                 additionalImageView.transform = CGAffineTransform(translationX: -1.3*self.additionalImageView.bounds.width, y: 150).concatenating(CGAffineTransform(scaleX: 1.3, y: 1.3))
-                additionalImageView.image = photos[selectedPhotoIndex - 1]
+                additionalImageView.af.setImage(withURL: URL(string: photos[selectedPhotoIndex - 1].photoUrl)!)
                 // создаем аниматор для движения направо
                 propertyAnimator = UIViewPropertyAnimator(duration: 0.7, curve: .easeInOut, animations: {
                     self.bigPhotoImageView.transform = CGAffineTransform(translationX: 1.5*self.bigPhotoImageView.bounds.width, y: -100).concatenating(CGAffineTransform(scaleX: 0.6, y: 0.6))
@@ -103,7 +104,7 @@ class PhotoViewController: UIViewController {
                         self.additionalImageView.transform = CGAffineTransform(translationX: -1.3*self.additionalImageView.bounds.width, y: 150).concatenating(CGAffineTransform(scaleX: 1.3, y: 1.3))
                     case .end:
                         self.selectedPhotoIndex -= 1
-                        self.bigPhotoImageView.image = self.photos[self.selectedPhotoIndex]
+                        self.bigPhotoImageView.af.setImage(withURL: URL(string: self.photos[self.selectedPhotoIndex].photoUrl)!)
                         self.bigPhotoImageView.transform = .identity
                         self.additionalImageView.image = nil
                     case .current:
@@ -117,7 +118,7 @@ class PhotoViewController: UIViewController {
                 animationDirection = .left
                 // начальная трансформация
                 additionalImageView.transform = CGAffineTransform(translationX: 1.3*self.additionalImageView.bounds.width, y: 150).concatenating(CGAffineTransform(scaleX: 1.3, y: 1.3))
-                additionalImageView.image = photos[selectedPhotoIndex + 1]
+                additionalImageView.af.setImage(withURL: URL(string: photos[selectedPhotoIndex + 1].photoUrl)!)
                 // создаем аниматор для движения налево
                 propertyAnimator = UIViewPropertyAnimator(duration: 0.7, curve: .easeInOut, animations: {
                     self.bigPhotoImageView.transform = CGAffineTransform(translationX: -1.5*self.bigPhotoImageView.bounds.width, y: -100).concatenating(CGAffineTransform(scaleX: 0.6, y: 0.6))
@@ -129,7 +130,7 @@ class PhotoViewController: UIViewController {
                         self.additionalImageView.transform = CGAffineTransform(translationX: 1.3*self.additionalImageView.bounds.width, y: 150).concatenating(CGAffineTransform(scaleX: 1.3, y: 1.3))
                     case .end:
                         self.selectedPhotoIndex += 1
-                        self.bigPhotoImageView.image = self.photos[self.selectedPhotoIndex]
+                        self.bigPhotoImageView.af.setImage(withURL: URL(string: self.photos[self.selectedPhotoIndex].photoUrl)!)
                         self.bigPhotoImageView.transform = .identity
                         self.additionalImageView.image = nil
                     case .current:

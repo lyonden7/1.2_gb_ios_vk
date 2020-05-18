@@ -7,13 +7,17 @@
 //
 
 import UIKit
+import AlamofireImage
 
 class GroupsCell: UITableViewCell {
 
     @IBOutlet var groupNameLabel: UILabel!
     @IBOutlet var groupAvatarView: UIImageView!
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
+    public func configure(with group: Group){
+        groupNameLabel.text = group.name
+        
+        let groupAvatarUrlString = group.groupAvatarUrl
+        groupAvatarView.af.setImage(withURL: URL(string: groupAvatarUrlString)!)
     }
 }

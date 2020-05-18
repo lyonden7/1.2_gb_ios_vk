@@ -19,7 +19,7 @@ class NetworkService {
     let baseURL = "https://api.vk.com/method/"
     let versionAPI = "5.103"
     
-    func loadFriends(token: String){
+    func loadFriends(token: String, completion: @escaping ([Friend]) -> Void){
         let path  = "friends.get"
         let url = baseURL + path
         let parameters: Parameters = [
@@ -29,28 +29,37 @@ class NetworkService {
             "order": "hints"
         ]
         
-        NetworkService.session.request(url, parameters: parameters).responseJSON { response in
-            guard let json = response.value else { return }
-            print(json)
+        NetworkService.session.request(url, parameters: parameters).responseData { response in
+            guard let data = response.value else { return }
+            let friend = try! JSONDecoder().decode(FriendResponse.self, from: data).response
+            completion(friend.items)
         }
     }
     
-    func loadFriendPhotos(token: String){
+    func loadFriendPhotos(token: String, ownerId: Int, completion: @escaping ([Photo]) -> Void){
         let path  = "photos.getAll"
         let url = baseURL + path
         let parameters: Parameters = [
             "access_token": token,
             "v": versionAPI,
-            "extended": 1
+            "extended": 1,
+            "owner_id": ownerId,
+            "count": 200
         ]
         
-        NetworkService.session.request(url, parameters: parameters).responseJSON { response in
-            guard let json = response.value else { return }
-            print(json)
+        NetworkService.session.request(url, parameters: parameters).responseData { response in
+            guard let data = response.value else { return }
+            do {
+                let photo = try JSONDecoder().decode(PhotoResponse.self, from: data).response
+                completion(photo.items)
+                print(photo)
+            } catch {
+                print(error)
+            }
         }
     }
     
-    func loadGroups(token: String){
+    func loadGroups(token: String, completion: @escaping ([Group]) -> Void){
         let path  = "groups.get"
         let url = baseURL + path
         let parameters: Parameters = [
@@ -59,9 +68,11 @@ class NetworkService {
             "extended": 1
         ]
         
-        NetworkService.session.request(url, parameters: parameters).responseJSON { response in
-            guard let json = response.value else { return }
-            print(json)
+        NetworkService.session.request(url, parameters: parameters).responseData { response in
+            guard let data = response.value else { return }
+            let group = try! JSONDecoder().decode(GroupResponse.self, from: data).response
+            completion(group.items)
+            print(group)
         }
     }
     

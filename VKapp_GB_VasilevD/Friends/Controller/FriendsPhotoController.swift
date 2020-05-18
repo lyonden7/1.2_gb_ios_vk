@@ -13,9 +13,9 @@ class FriendsPhotoController: UICollectionViewController {
     let networkService = NetworkService()
     let token = Session.instance.accessToken
     
-    var photos = [UIImage]()
-    
-    var friend: User!
+    var photos = [Photo]()
+    var friend: Friend!
+    var ownerId = Int()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,7 +24,10 @@ class FriendsPhotoController: UICollectionViewController {
 
         title = "\(friend.firstName) \(friend.lastName)"
         
-        networkService.loadFriendPhotos(token: token)
+        networkService.loadFriendPhotos(token: token, ownerId: ownerId) { [weak self] photo in
+            self?.photos = photo
+            self?.collectionView.reloadData()
+        }
     }
     
     // MARK: UICollectionViewDataSource
@@ -36,7 +39,7 @@ class FriendsPhotoController: UICollectionViewController {
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FriendsPhotoCell", for: indexPath) as! FriendsPhotoCell
         
-        cell.photoView.image = photos[indexPath.item]
+        cell.configure(with: photos[indexPath.item])
         
         let count = Int.random(in: 5...500)
         let isLiked = Bool.random()
