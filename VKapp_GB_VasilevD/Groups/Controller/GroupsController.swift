@@ -16,20 +16,20 @@ class GroupsController: UITableViewController {
     
     fileprivate lazy var filteredGroups = self.groups
     
-    
     // MARK: - System function
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        networkService.loadGroups(token: token) { [weak self] group in
-            self?.groups = group
-            self?.tableView.reloadData()
-        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(false, animated: true)
+        
+        networkService.loadGroups(token: token) { [weak self] group in
+            self?.groups = group
+            self?.tableView.reloadData()
+        }
     }
 
     

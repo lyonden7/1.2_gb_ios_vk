@@ -10,15 +10,11 @@ import UIKit
 
 class AllGroupsController: UITableViewController {
 
+    @IBOutlet var searchBar: UISearchBar!
+    
     let networkService = NetworkService()
     let token = Session.instance.accessToken
     var groups = [Group]()
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        networkService.loadSearchGroups(token: token)
-    }
 
     // MARK: - Table view data source
 
@@ -27,22 +23,28 @@ class AllGroupsController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 0
+        return groups.count
     }
 
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "GroupsCell", for: indexPath) as! GroupsCell
-//        let group = groupNames[indexPath.row]
-        
-//        cell.groupNameLabel.text = group.name
-//        if group.avatar == nil {
-//            cell.groupAvatarView.image = UIImage(named: "horse")
-//        } else {
-//            cell.groupAvatarView.image = group.avatar
-//        }
+        let group = groups[indexPath.row]
 
+        cell.configure(with: group)
         return cell
     }
+}
 
+extension AllGroupsController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String){
+        filterGroups(with: searchText)
+    }
+        
+    private func filterGroups(with text: String) {
+        networkService.loadSearchGroups(token: token, for: text) { [weak self] group in
+            self?.groups = group
+            self?.tableView.reloadData()
+        }
+    }
 }

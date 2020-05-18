@@ -76,18 +76,20 @@ class NetworkService {
         }
     }
     
-    func loadSearchGroups(token: String){
+    func loadSearchGroups(token: String, for searchTtext: String, completion: @escaping ([Group]) -> Void){
         let path  = "groups.search"
         let url = baseURL + path
         let parameters: Parameters = [
             "access_token": token,
             "v": versionAPI,
-            "q": "troitsk"
+            "q": searchTtext
         ]
         
-        NetworkService.session.request(url, parameters: parameters).responseJSON { response in
-            guard let json = response.value else { return }
-            print(json)
+        NetworkService.session.request(url, parameters: parameters).responseData { response in
+            guard let data = response.value else { return }
+            let group = try! JSONDecoder().decode(GroupResponse.self, from: data).response
+            completion(group.items)
+            print(group)
         }
     }
 }
