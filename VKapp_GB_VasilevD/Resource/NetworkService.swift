@@ -87,9 +87,14 @@ class NetworkService {
         
         NetworkService.session.request(url, parameters: parameters).responseData { response in
             guard let data = response.value else { return }
-            let group = try! JSONDecoder().decode(GroupResponse.self, from: data).response
-            completion(group.items)
-            print(group)
+            do {
+                let group = try JSONDecoder().decode(GroupResponse.self, from: data).response
+                completion(group.items)
+                print(group)
+            } catch {
+                print(error)
+            }
+            
         }
     }
 }
