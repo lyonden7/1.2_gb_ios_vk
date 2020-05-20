@@ -7,29 +7,41 @@
 //
 
 import Foundation
+import RealmSwift
 
-struct FriendResponse: Codable {
+struct FriendResponse: Decodable {
     let response: FriendObject
 }
 
-struct FriendObject: Codable {
+struct FriendObject: Decodable {
     let count: Int
     let items: [Friend]
 }
 
-struct Friend: Codable {
-    let id: Int
-    let firstName: String
-    let lastName: String
-    let friendAvatarUrl: String
+class Friend: Object, Decodable {
+    @objc dynamic var id = 0
+    @objc dynamic var firstName = ""
+    @objc dynamic var lastName = ""
+    @objc dynamic var friendAvatarUrl = ""
 
     enum CodingKeys: String, CodingKey {
-        case id
+        case id = "id"
         case firstName = "first_name"
         case lastName = "last_name"
         case friendAvatarUrl = "photo_50"
     }
+    
+    convenience required init(from decoder: Decoder) throws {
+        self.init()
+        let friendsContainer = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try friendsContainer.decode(Int.self, forKey: .id)
+        self.firstName = try friendsContainer.decode(String.self, forKey: .firstName)
+        self.lastName = try friendsContainer.decode(String.self, forKey: .lastName)
+        self.friendAvatarUrl = try friendsContainer.decode(String.self, forKey: .friendAvatarUrl)
+    }
 }
+
+
 
 
 //{

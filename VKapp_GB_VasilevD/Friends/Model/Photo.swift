@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import RealmSwift
 
 struct PhotoResponse: Decodable {
     let response: PhotoObject
@@ -16,9 +17,9 @@ struct PhotoObject: Decodable {
     let items: [Photo]
 }
 
-struct Photo: Decodable {
-    var type = ""
-    var photoUrl = ""
+class Photo: Object, Decodable {
+    @objc dynamic var type = ""
+    @objc dynamic var photoUrl = ""
 //    var isLikedByUser = 0
 //    var count = 0
     
@@ -37,11 +38,13 @@ struct Photo: Decodable {
 //        case count = "count"
 //    }
     
-    init(from decoder: Decoder) throws {
-        let photoValues = try decoder.container(keyedBy: CodingKeys.self)
+    convenience required init(from decoder: Decoder) throws {
+        self.init()
+        let photoContainer = try decoder.container(keyedBy: CodingKeys.self)
         
-        var sizesArray = try photoValues.nestedUnkeyedContainer(forKey: .sizes)
-        let sizesValues = try sizesArray.nestedContainer(keyedBy: SizeKeys.self)
+        var sizesContainer = try photoContainer.nestedUnkeyedContainer(forKey: .sizes)
+        let sizesValues = try sizesContainer.nestedContainer(keyedBy: SizeKeys.self)
+        
         self.type = try sizesValues.decode(String.self, forKey: .type)
         self.photoUrl = try sizesValues.decode(String.self, forKey: .photoUrl)
         
@@ -52,31 +55,11 @@ struct Photo: Decodable {
     }
 }
 
-//struct Photo: Codable {
-//    let id: Int
-//    let sizes: [PhotoSizes]
-//    let likes: PhotoLikes
-//}
-//
-//struct PhotoSizes: Codable {
-//    let type: String
-//    let photoUrl: String
-//
-//    enum CodingKeys: String, CodingKey {
-//        case type
-//        case photoUrl = "url"
-//    }
-//}
-//
-//struct PhotoLikes: Codable {
-//    let isLikedByUser: Int
-//    let count: Int
-//
-//    enum CodingKeys: String, CodingKey {
-//        case isLikedByUser = "user_likes"
-//        case count
-//    }
-//}
+
+
+
+
+
 
 
 //{

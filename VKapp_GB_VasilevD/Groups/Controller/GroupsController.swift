@@ -21,6 +21,7 @@ class GroupsController: UITableViewController {
         
         networkService.loadGroups() { [weak self] group in
             self?.groups = group
+            self?.filteredGroups = group
             self?.tableView.reloadData()
         }
     }
