@@ -10,26 +10,10 @@ import UIKit
 
 class AllGroupsController: UITableViewController {
 
-    let networkService = NetworkService()
-    let token = Session.instance.accessToken
+    @IBOutlet var searchBar: UISearchBar!
     
-    let groupNames = [
-        Group(name: "Российская Премьер-Лига", avatar: UIImage(named: "rpl")),
-        Group(name: "Лига Европы", avatar: UIImage(named: "uel")),
-        Group(name: "FIFA", avatar: UIImage(named: "fifa")),
-        Group(name: "UEFA", avatar: UIImage(named: "uefa")),
-        Group(name: "Лига Чемпионов", avatar: UIImage(named: "ucl")),
-        Group(name: "Adidas", avatar: UIImage(named: "adidas")),
-        Group(name: "Joma", avatar: UIImage(named: "joma")),
-        Group(name: "Select", avatar: UIImage(named: "select")),
-        Group(name: "Umbro", avatar: UIImage(named: "umbro"))
-    ]
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        networkService.loadSearchGroups(token: token)
-    }
+    let networkService = NetworkService(token: Session.instance.accessToken)
+    var groups = [Group]()
 
     // MARK: - Table view data source
 
@@ -38,22 +22,28 @@ class AllGroupsController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return groupNames.count
+        return groups.count
     }
 
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "GroupsCell", for: indexPath) as! GroupsCell
-        let group = groupNames[indexPath.row]
-        
-        cell.groupNameLabel.text = group.name
-        if group.avatar == nil {
-            cell.groupAvatarView.image = UIImage(named: "horse")
-        } else {
-            cell.groupAvatarView.image = group.avatar
-        }
+        let group = groups[indexPath.row]
 
+        cell.configure(with: group)
         return cell
     }
+}
 
+extension AllGroupsController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String){
+        filterGroups(with: searchText)
+    }
+        
+    private func filterGroups(with text: String) {
+        networkService.loadSearchGroups(for: text) { [weak self] group in
+            self?.groups = group
+            self?.tableView.reloadData()
+        }
+    }
 }

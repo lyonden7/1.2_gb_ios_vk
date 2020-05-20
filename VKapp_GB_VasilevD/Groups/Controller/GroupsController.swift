@@ -10,22 +10,19 @@ import UIKit
 
 class GroupsController: UITableViewController {
 
-    let networkService = NetworkService()
-    let token = Session.instance.accessToken
+    let networkService = NetworkService(token: Session.instance.accessToken)
+    var groups = [Group]()
     
-    fileprivate var groupNames = [
-        Group(name: "Российская Премьер-Лига", avatar: UIImage(named: "rpl")),
-        Group(name: "Лига Европы", avatar: UIImage(named: "uel"))
-    ]
-    
-    fileprivate lazy var filteredGroups = self.groupNames
-    
+    fileprivate lazy var filteredGroups = self.groups
     
     // MARK: - System function
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        networkService.loadGroups(token: token)
+        networkService.loadGroups() { [weak self] group in
+            self?.groups = group
+            self?.tableView.reloadData()
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -42,13 +39,13 @@ class GroupsController: UITableViewController {
             guard let allGroupsVC = segue.source as? AllGroupsController,
                 let indexPath = allGroupsVC.tableView.indexPathForSelectedRow else { return }
             
-            let newGroup = allGroupsVC.groupNames[indexPath.row]
+            let newGroup = allGroupsVC.groups[indexPath.row]
             
-            guard !groupNames.contains(where: { group -> Bool in
+            guard !groups.contains(where: { group -> Bool in
                 group.name == newGroup.name
             }) else { return }
             
-            groupNames.append(newGroup)
+            groups.append(newGroup)
             
             filterGroups(with: searchBar.text ?? "")
             tableView.reloadData()
@@ -70,13 +67,7 @@ class GroupsController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "GroupsCell", for: indexPath) as! GroupsCell
         let group = filteredGroups[indexPath.row]
         
-        cell.groupNameLabel.text = group.name
-        if group.avatar == nil {
-            cell.groupAvatarView.image = UIImage(named: "horse")
-        } else {
-            cell.groupAvatarView.image = group.avatar
-        }
-
+        cell.configure(with: group)
         return cell
     }
 
@@ -86,7 +77,7 @@ class GroupsController: UITableViewController {
             filteredGroups.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
             
-            groupNames.removeAll { group -> Bool in
+            groups.removeAll { group -> Bool in
                 return group.name == groupToDelete.name
             }
         }
@@ -101,13 +92,14 @@ extension GroupsController: UISearchBarDelegate {
         filterGroups(with: searchText)
     }
     
-    fileprivate func filterGroups(with text: String) {
+    fileprivate func filterGroups(with text: String?) {
+        let text = text ?? ""
         if text.isEmpty {
-            filteredGroups = groupNames
+            filteredGroups = groups
             tableView.reloadData()
             return
         }
-        filteredGroups = groupNames.filter { $0.name.lowercased().contains(text.lowercased())}
+        filteredGroups = groups.filter { $0.name.lowercased().contains(text.lowercased())}
         tableView.reloadData()
     }
 }

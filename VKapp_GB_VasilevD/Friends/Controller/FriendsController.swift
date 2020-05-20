@@ -10,43 +10,17 @@ import UIKit
 
 class FriendsController: UITableViewController {
 
-    let friends = User.getFriends()
-    let networkService = NetworkService()
-    let token = Session.instance.accessToken
-    
-    
-    // MARK: - Sort
-    
-    var firstCharacters = [Character]()
-    var sortedFriends: [Character: [User]] = [:]
-    
-    private func sort(_ friends: [User]) -> (characters: [Character], sortedFriends: [Character: [User]]) {
-        
-        var characters = [Character]()
-        var sortedFriends = [Character: [User]]()
-        
-        friends.forEach { friend in
-            guard let character = friend.firstName.first else { return }
-            if var thisCharFriends = sortedFriends[character] {
-                thisCharFriends.append(friend)
-                sortedFriends[character] = thisCharFriends
-            } else {
-                sortedFriends[character] = [friend]
-                characters.append(character)
-            }
-        }
-        characters.sort()
-        
-        return (characters, sortedFriends)
-    }
+    var friends = [Friend]()
+    let networkService = NetworkService(token: Session.instance.accessToken)
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        (firstCharacters, sortedFriends) = sort(friends)
         
-        networkService.loadFriends(token: token)
+        networkService.loadFriends() { [weak self] friend in
+            self?.friends = friend
+            self?.tableView.reloadData()
+        }
     }
-    
     
     // MARK: - System functions
     
@@ -62,36 +36,15 @@ class FriendsController: UITableViewController {
     
     // MARK: - Table view data source
     
-
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return firstCharacters.count
-    }
-    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let character = firstCharacters[section]
-        let friendsCount = sortedFriends[character]?.count
-        return friendsCount ?? 0
+        return friends.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "FriendsCell", for: indexPath) as! FriendsCell
-        let character = firstCharacters[indexPath.section]
-        if let friends = sortedFriends[character]{
-            cell.userNameLabel.text = "\(friends[indexPath.row].firstName) \(friends[indexPath.row].lastName)"
-            
-            if friends[indexPath.row].avatar == nil {
-                cell.avatarView.userAvatarView.image = UIImage(named: "horse")
-            } else {
-                cell.avatarView.userAvatarView.image = friends[indexPath.row].avatar
-            }
+        
+            cell.configure(with: friends[indexPath.row])
             return cell
-        }
-        return UITableViewCell()
-    }
-
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        let character = firstCharacters[section]
-        return String(character)
     }
     
     // MARK: - Navigation
@@ -101,13 +54,9 @@ class FriendsController: UITableViewController {
         if segue.identifier == "FriendsPhotoSegue",
             let indexPath = tableView.indexPathForSelectedRow,
             let photoVC = segue.destination as? FriendsPhotoController {
-            let character = firstCharacters[indexPath.section]
-            if let friends = sortedFriends[character] {
-                let friend = friends[indexPath.row]
-                let photos = friend.photos
-                photoVC.photos = photos
-                photoVC.friend = friend
-            }
+            let friend = friends[indexPath.row]
+            photoVC.friend = friend
+            photoVC.ownerId = friend.id
         }
     }
 

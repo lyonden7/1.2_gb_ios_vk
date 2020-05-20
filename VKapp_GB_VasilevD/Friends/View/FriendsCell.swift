@@ -7,13 +7,17 @@
 //
 
 import UIKit
+import AlamofireImage
 
 class FriendsCell: UITableViewCell {
 
-    @IBOutlet var userNameLabel: UILabel!
+    @IBOutlet var friendFullNameLabel: UILabel!
     @IBOutlet var avatarView: AvatarView!
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
+    public func configure(with friend: Friend){
+        friendFullNameLabel.text = friend.firstName + " " + friend.lastName
+        
+        let friendAvatarUrlString = friend.friendAvatarUrl
+        avatarView.userAvatarView.af.setImage(withURL: URL(string: friendAvatarUrlString)!)
     }
 }
