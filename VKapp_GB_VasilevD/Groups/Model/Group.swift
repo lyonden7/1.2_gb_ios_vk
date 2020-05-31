@@ -7,22 +7,30 @@
 //
 
 import UIKit
+import RealmSwift
 
-struct GroupResponse: Codable {
+struct GroupResponse: Decodable {
     let response: GroupObject
 }
 
-struct GroupObject: Codable {
+struct GroupObject: Decodable {
     let items: [Group]
 }
 
-struct Group: Codable {
-    let name: String
-    let groupAvatarUrl: String
+class Group: Object, Decodable {
+    @objc dynamic var name = ""
+    @objc dynamic var groupAvatarUrl: String = ""
     
     enum CodingKeys: String, CodingKey {
-        case name
+        case name = "name"
         case groupAvatarUrl = "photo_50"
+    }
+    
+    convenience required init(from decoder: Decoder) throws {
+        self.init()
+        let groupsContainer = try decoder.container(keyedBy: CodingKeys.self)
+        self.name = try groupsContainer.decode(String.self, forKey: .name)
+        self.groupAvatarUrl = try groupsContainer.decode(String.self, forKey: .groupAvatarUrl)
     }
 }
 

@@ -8,5 +8,6 @@ target 'VKapp_GB_VasilevD' do
   # Pods for VKapp_GB_VasilevD
   pod 'Alamofire', '~> 5.2'
   pod 'AlamofireImage', '~> 4.1'
+  pod 'RealmSwift', '~> 5.0.0'
 
 end
