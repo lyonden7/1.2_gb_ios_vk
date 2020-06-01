@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import RealmSwift
 
 class FriendsPhotoController: UICollectionViewController {
     
@@ -23,9 +24,22 @@ class FriendsPhotoController: UICollectionViewController {
 
         title = "\(friend.firstName) \(friend.lastName)"
         
-        networkService.loadFriendPhotos(ownerId: ownerId) { [weak self] photo in
-            self?.photos = photo
-            self?.collectionView.reloadData()
+        loadFriendPhotosDataFromRealm(ownerId: ownerId)
+        
+        networkService.loadFriendPhotos(ownerId: ownerId) { [weak self] in
+            self?.loadFriendPhotosDataFromRealm(ownerId: self!.ownerId)
+        }
+    }
+    
+    func loadFriendPhotosDataFromRealm(ownerId: Int) {
+        do {
+            let realm = try Realm()
+            let filter = "ownerId == " + String(ownerId)
+            let photos = realm.objects(Photo.self).filter(filter)
+            self.photos = Array(photos)
+            self.collectionView.reloadData()
+        } catch {
+            print(error)
         }
     }
     

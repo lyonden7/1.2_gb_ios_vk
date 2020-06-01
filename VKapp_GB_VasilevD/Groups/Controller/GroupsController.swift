@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import RealmSwift
 
 class GroupsController: UITableViewController {
 
@@ -19,10 +20,23 @@ class GroupsController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        networkService.loadGroups() { [weak self] group in
-            self?.groups = group
-            self?.filteredGroups = group
+        loadGroupsDataFromRealm()
+        
+        networkService.loadGroups() { [weak self] in
+            self?.loadGroupsDataFromRealm()
+//            self?.groups = group
+//            self?.filteredGroups = group
             self?.tableView.reloadData()
+        }
+    }
+    
+    func loadGroupsDataFromRealm() {
+        do {
+            let realm = try Realm()
+            let groups = realm.objects(Group.self)
+            self.groups = Array(groups)
+        } catch {
+            print(error)
         }
     }
     
@@ -61,12 +75,14 @@ class GroupsController: UITableViewController {
     // MARK: - Table view data source
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return filteredGroups.count
+//        return filteredGroups.count
+        return groups.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "GroupsCell", for: indexPath) as! GroupsCell
-        let group = filteredGroups[indexPath.row]
+//        let group = filteredGroups[indexPath.row]
+        let group = groups[indexPath.row]
         
         cell.configure(with: group)
         return cell

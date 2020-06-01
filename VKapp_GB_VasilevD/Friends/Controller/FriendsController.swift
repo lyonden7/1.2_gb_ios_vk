@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import RealmSwift
 
 class FriendsController: UITableViewController {
 
@@ -16,9 +17,21 @@ class FriendsController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        networkService.loadFriends() { [weak self] friend in
-            self?.friends = friend
+        loadFriendsDataFromRealm()
+        
+        networkService.loadFriends() { [weak self] in
+            self?.loadFriendsDataFromRealm()
             self?.tableView.reloadData()
+        }
+    }
+    
+    func loadFriendsDataFromRealm() {
+        do {
+            let realm = try Realm()
+            let friends = realm.objects(Friend.self)
+            self.friends = Array(friends)
+        } catch {
+            print(error)
         }
     }
     

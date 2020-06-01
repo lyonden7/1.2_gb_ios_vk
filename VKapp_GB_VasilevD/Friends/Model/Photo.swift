@@ -18,48 +18,51 @@ struct PhotoObject: Decodable {
 }
 
 class Photo: Object, Decodable {
+    @objc dynamic var id: Int = 0
+    @objc dynamic var ownerId: Int = 0
     @objc dynamic var type = ""
     @objc dynamic var photoUrl = ""
-//    var isLikedByUser = 0
-//    var count = 0
     
     enum CodingKeys: String, CodingKey {
-        case sizes = "sizes"
-        case likes = "likes"
+        case id
+        case ownerId = "owner_id"
+        case sizes
+        case likes
     }
     
     enum SizeKeys: String, CodingKey {
-        case type = "type"
+        case type
         case photoUrl = "url"
     }
     
-//    enum LikesKeys: String, CodingKey {
-//        case isLikedByUser = "user_likes"
-//        case count = "count"
+//    override static func primaryKey() -> String? {
+//        return "photoUrl"
 //    }
     
     convenience required init(from decoder: Decoder) throws {
         self.init()
         let photoContainer = try decoder.container(keyedBy: CodingKeys.self)
         
+        self.id = try photoContainer.decode(Int.self, forKey: .id)
+        self.ownerId = try photoContainer.decode(Int.self, forKey: .ownerId)
+        
         var sizesContainer = try photoContainer.nestedUnkeyedContainer(forKey: .sizes)
-        let sizesValues = try sizesContainer.nestedContainer(keyedBy: SizeKeys.self)
         
-        self.type = try sizesValues.decode(String.self, forKey: .type)
-        self.photoUrl = try sizesValues.decode(String.self, forKey: .photoUrl)
-        
-//        var likes = try photoValues.nestedUnkeyedContainer(forKey: .likes)
-//        let likesValues = try likes.nestedContainer(keyedBy: LikesKeys.self)
-//        self.isLikedByUser = try likesValues.decode(Int.self, forKey: .isLikedByUser)
-//        self.count = try likesValues.decode(Int.self, forKey: .count)
+        while !sizesContainer.isAtEnd {
+            let sizesValues = try sizesContainer.nestedContainer(keyedBy: SizeKeys.self)
+            let photoType = try sizesValues.decode(String.self, forKey: .type)
+            switch photoType {
+            case "x":
+                self.photoUrl = try sizesValues.decode(String.self, forKey: .photoUrl)
+            case "m":
+                self.photoUrl = try sizesValues.decode(String.self, forKey: .photoUrl)
+            default:
+                break
+            }
+        }
+
     }
 }
-
-
-
-
-
-
 
 
 //{
