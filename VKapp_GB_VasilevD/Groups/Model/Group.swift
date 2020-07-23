@@ -18,19 +18,18 @@ struct GroupObject: Decodable {
 }
 
 class Group: Object, Decodable {
+    @objc dynamic var id = 0
     @objc dynamic var name = ""
     @objc dynamic var groupAvatarUrl: String = ""
     
     enum CodingKeys: String, CodingKey {
-        case name = "name"
+        case id
+        case name
         case groupAvatarUrl = "photo_50"
     }
     
-    convenience required init(from decoder: Decoder) throws {
-        self.init()
-        let groupsContainer = try decoder.container(keyedBy: CodingKeys.self)
-        self.name = try groupsContainer.decode(String.self, forKey: .name)
-        self.groupAvatarUrl = try groupsContainer.decode(String.self, forKey: .groupAvatarUrl)
+    override static func primaryKey() -> String? {
+        return "id"
     }
 }
 

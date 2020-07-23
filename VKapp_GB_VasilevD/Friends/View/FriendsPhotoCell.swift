@@ -24,10 +24,6 @@ class FriendsPhotoCell: UICollectionViewCell {
         photoView.af.setImage(withURL: URL(string: friendPhotoUrlString)!)
     }
     
-//    func setSize(with photoSizes: PhotoSizes, photo: Photo) {
-//        guard let imageSize = photo.sizes.array?.first(where: { $0; photoSizes.type == "s" }) else { return })
-//    }
-    
     override func prepareForReuse() {
         super.prepareForReuse()
         
@@ -35,33 +31,3 @@ class FriendsPhotoCell: UICollectionViewCell {
     }
     
 }
-
-//            "sizes": [
-//                {
-//                    "type": "m", (o,p,q,r,s,w,x,y,z)
-
-
-//    guard let imageSize = json["sizes"].array?.first(where: { $0["type"] == "s" }) else { return }
-//    self.friendPhotoUrlString = imageSize["url"].stringValue
-//
-//    if let friendPhotoUrlString = json["sizes"].array?.first(where: { $0["type"] == "m" })?["url"].string {
-//        self.friendPhotoUrlString = friendPhotoUrlString
-//    }
-//
-//    self.friendPhotoFullSizeUrlString = self.friendPhotoUrlString
-//
-//    if let sizes = json["sizes"].array?
-//        .filter({ ["m", "o", "p", "q", "r", "s", "w", "x", "y", "z"].contains($0["type"]) })
-//        .sorted(by: { $0["width"].intValue * $0["height"].intValue > $1["width"].intValue * $1["height"].intValue }),
-//        let photoUrlString = sizes.first?["url"].string {
-//        self.friendPhotoFullSizeUrlString = photoUrlString
-//    }
-//}
-
-
-
-//public func configure(with photo: Photo) {
-//    let friendPhotoUrlString = photo.friendPhotoFullSizeUrlString
-//    photoView.kf.setImage(with: URL(string: friendPhotoUrlString))
-//}
-

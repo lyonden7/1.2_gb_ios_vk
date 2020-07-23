@@ -7,11 +7,14 @@
 //
 
 import UIKit
+import RealmSwift
 
 class GroupsController: UITableViewController {
 
     let networkService = NetworkService(token: Session.instance.accessToken)
-    var groups = [Group]()
+    var groups: Results<Group>?
+    var token: NotificationToken?
+//    var groups = [Group]()
     
     fileprivate lazy var filteredGroups = self.groups
     
@@ -19,10 +22,50 @@ class GroupsController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        networkService.loadGroups() { [weak self] group in
-            self?.groups = group
-            self?.filteredGroups = group
-            self?.tableView.reloadData()
+        loadGroupsDataFromRealm()
+        
+        networkService.loadGroups() { [weak self] in
+            self?.loadGroupsDataFromRealm()
+//            self?.groups = group
+//            self?.filteredGroups = group
+//            self?.tableView.reloadData()
+            self?.pairTableAndRealm()
+        }
+    }
+    
+    func pairTableAndRealm() {
+        guard let realm = try? Realm() else { return }
+        groups = realm.objects(Group.self)
+        token = groups!.observe { [weak self] (changes: RealmCollectionChange) in
+            guard let tableView = self?.tableView else { return }
+            switch changes {
+            case .initial:
+                tableView.reloadData()
+            case .update(_,
+                         deletions: let deletions,
+                         insertions: let insertions,
+                         modifications: let modifications):
+                tableView.beginUpdates()
+                tableView.insertRows(at: insertions.map({ IndexPath(row: $0, section: 0) }),
+                                     with: .automatic)
+                tableView.deleteRows(at: deletions.map({ IndexPath(row: $0, section: 0)}),
+                                     with: .automatic)
+                tableView.reloadRows(at: modifications.map({ IndexPath(row: $0, section: 0) }),
+                                     with: .automatic)
+                tableView.endUpdates()
+            case .error(let error):
+                fatalError("\(error)")
+            }
+        }
+    }
+    
+    func loadGroupsDataFromRealm() {
+        do {
+            let realm = try Realm()
+            let groups = realm.objects(Group.self)
+            self.groups = groups
+        } catch {
+            print(error)
         }
     }
     
@@ -42,11 +85,11 @@ class GroupsController: UITableViewController {
             
             let newGroup = allGroupsVC.groups[indexPath.row]
             
-            guard !groups.contains(where: { group -> Bool in
+            guard !groups!.contains(where: { group -> Bool in
                 group.name == newGroup.name
             }) else { return }
             
-            groups.append(newGroup)
+//            groups.append(newGroup)
             
             filterGroups(with: searchBar.text ?? "")
             tableView.reloadData()
@@ -61,28 +104,30 @@ class GroupsController: UITableViewController {
     // MARK: - Table view data source
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return filteredGroups.count
+//        return filteredGroups.count
+        return groups!.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "GroupsCell", for: indexPath) as! GroupsCell
-        let group = filteredGroups[indexPath.row]
+//        let group = filteredGroups[indexPath.row]
+        let group = groups![indexPath.row]
         
         cell.configure(with: group)
         return cell
     }
 
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            let groupToDelete = filteredGroups[indexPath.row]
-            filteredGroups.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .fade)
-            
-            groups.removeAll { group -> Bool in
-                return group.name == groupToDelete.name
-            }
-        }
-    }
+//    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+//        if editingStyle == .delete {
+//            let groupToDelete = filteredGroups![indexPath.row]
+//            filteredGroups.remove(at: indexPath.row)
+//            tableView.deleteRows(at: [indexPath], with: .fade)
+//
+//            groups.removeAll { group -> Bool in
+//                return group.name == groupToDelete.name
+//            }
+//        }
+//    }
 
 }
 
@@ -100,7 +145,7 @@ extension GroupsController: UISearchBarDelegate {
             tableView.reloadData()
             return
         }
-        filteredGroups = groups.filter { $0.name.lowercased().contains(text.lowercased())}
+//        filteredGroups = groups!.filter { $0.name.lowercased().contains(text.lowercased())}
         tableView.reloadData()
     }
 }
